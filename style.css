@@ -1,0 +1,52 @@
+body {
+  margin: 10px;
+  padding-top: 50px;
+}
+
+#banner {
+  width: 1280px;
+  height: 370px;
+}
+
+#banner h1 {
+  margin: 10px;
+  color: #fff;
+}
+
+.clear {
+  clear: both;
+}
+
+.css-pager a {
+  text-decoration:none;
+  color:#666;
+  background:#F4F4F4;
+  border:1px solid #e0e0e0;
+  padding:2px 5px;
+  margin:2px;
+  font-weight:700;
+  font-size:11px;
+}
+
+.css-pager a:hover {
+  text-decoration:none;
+  color:#fff;
+  background:#0A85CB;
+  border:1px solid #3af;
+	padding:2px 5px;
+  margin:2px;
+}
+
+.current_page {
+  background-color:#0A85CB;
+  border:1px solid #3af;
+  padding:2px 5px;
+  margin:2px;
+  color:#fff;
+  font-weight:700;
+  font-size:11px;
+}
+
+#tabel-hak-akses .chbox {
+  width: 5%;
+}
