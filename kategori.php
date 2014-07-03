@@ -53,8 +53,8 @@ if (isset($_POST['nama']) and $_POST['nama']<>"") {
 	} else {
 		$data['idkel_ruas'] = $_POST['idkel_ruas'];
 	}
-//	$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] ;
-	$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] .' ORDER BY b_atas DESC LIMIT 0,1';
+	$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] ;
+//  $parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] .' OR idruas='.$data['idkel_ruas'] .' ORDER BY b_atas DESC LIMIT 0,1';
 	$parent_rs = $dbs->query($parent_sql);
 	$parent_data = $parent_rs->fetch_array();
 
@@ -77,8 +77,9 @@ if (isset($_POST['nama']) and $_POST['nama']<>"") {
 			utility::jsAlert('Update Gagal!');
 		}
 	} else {
-		$update = $dbs->query('UPDATE `ruas` SET `b_atas`=`b_atas`+2,`b_bawah`=`b_bawah`+2 WHERE `b_atas` >'.$data['b_atas'].' AND `b_bawah` >='.$data['b_atas']);
-		$update = $dbs->query('UPDATE `ruas` SET `b_bawah`=`b_bawah`+2 WHERE `b_bawah` >='.$data['b_atas']);
+		$update = $dbs->query('UPDATE `ruas` SET `b_atas`=`b_atas`+3,`b_bawah`=`b_bawah`+3 WHERE `b_atas` >='.$data['b_atas'].' AND `b_bawah` >='.$data['b_atas']);
+//		$update = $dbs->query('UPDATE `ruas` SET `b_atas`=`b_atas`+2,`b_bawah`=`b_bawah`+3 WHERE `b_atas` >'.$data['b_atas'].' AND `b_bawah` >='.$data['b_atas']);
+//		$update = $dbs->query('UPDATE `ruas` SET `b_bawah`=`b_bawah`+2 WHERE `b_bawah` >='.$data['b_atas']);
 		$insert = $sql_op->insert('ruas', $data);
 		if ($insert) {
 			utility::jsAlert('Sukses Ditambahkan!');
@@ -91,6 +92,7 @@ if (isset($_POST['nama']) and $_POST['nama']<>"") {
 echo '<form class="form-horizontal" method="POST" action="kategori.php">';
 echo '<select name="idkel_ruas">';
 echo '<option value="">Bagian dari ruas</option>';
+
 //$combo_sql = 'SELECT idruas, nama FROM ruas WHERE idkel_ruas = 0 ';
 $combo_sql = 'SELECT * FROM ruas ';
 $combo_sql .= 'ORDER BY b_atas,b_bawah ';
@@ -113,15 +115,35 @@ if (isset($idruas) AND $idruas<>'') {
 echo '<button type="submit" class="btn btn-primary" value="Simpan" >Simpan data</button>';
 echo '</form>';
 
+//Maksimum tingkat
+$max_sql = 'SELECT max(`tingkat`) FROM ruas';
+$max_set =  $dbs->query($max_sql);
+$max_level = $max_set->fetch_row();
+// data ruas
 $top_sql = 'SELECT * FROM ruas ORDER BY b_atas, b_bawah';
 $top_set = $dbs->query($top_sql);
 $result = '<table class="table-striped" width="90%" >';
 while($rs = $top_set->fetch_assoc()) {
-		$result .= '<tr>';
+/**		$result .= '<tr>';
 		$result .= '<td width="5%"><a href="kategori.php?id='.$rs['idruas'].'" title="Ubah kategori: '.$rs['nama'].'"><i class="icon-edit"></i></a>';
 		$result .= ' <a href="kategori.php?del='.$rs['idruas'].'" title="Hapus kategori: '.$rs['nama'].'"><i class="icon-remove-sign"></i></a></td>';
 		$result .= '<td>&nbsp;</td><td>'.str_repeat("&nbsp;",$rs['tingkat']).$rs['nama']."&nbsp;--&nbsp;".$rs['deskripsi'].'</td>';
 		$result .= '</tr>';
+**/
+		$result .= "<tr>\n";
+		for ($i=0; $i<= $max_level[0]; $i++) {
+			if ($rs['tingkat'] <> $i) {
+				$result .= "<td>&nbsp;</td>\n";
+			} else {
+				$span = $max_level[0]+1-$i;
+				$result .= '<td width="4%" align="center"><a href="kategori.php?id='.$rs['idruas'].'" title="Ubah kategori: '.$rs['nama'].'"><i class="icon-edit"></i></a>';
+				$result .= '<a href="kategori.php?del='.$rs['idruas'].'" title="Hapus kategori: '.$rs['nama'].'"><i class="icon-remove-sign"></i></a></td>';
+				$result .= '<td colspan="'.$span.'">'.$rs['nama']."&nbsp;--&nbsp;".$rs['deskripsi'].'</td>';
+				break;
+			}
+		}
+		$result .= "</tr>\n";
+
 }
 $result .='</table>';
 echo $result;
