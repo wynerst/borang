@@ -53,7 +53,8 @@ if (isset($_POST['nama']) and $_POST['nama']<>"") {
 	} else {
 		$data['idkel_ruas'] = $_POST['idkel_ruas'];
 	}
-	$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'];
+//	$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] ;
+	$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] .' ORDER BY b_atas DESC LIMIT 0,1';
 	$parent_rs = $dbs->query($parent_sql);
 	$parent_data = $parent_rs->fetch_array();
 
