@@ -18,6 +18,11 @@ $page_title = 'Kategori ruas data';
 
 ob_start();
 
+//Maksimum tingkat hirarki dan batas akhir
+$max_sql = 'SELECT max(`tingkat`), max(`b_bawah`) FROM ruas';
+$max_set =  $dbs->query($max_sql);
+$max_level = $max_set->fetch_row();
+
 if (isset($_GET['id']) AND $_GET['id']<> "") {
 	$_sql = 'SELECT * FROM ruas WHERE idruas ='.$_GET['id'];
 	$edit_set = $dbs->query($_sql);
@@ -26,12 +31,14 @@ if (isset($_GET['id']) AND $_GET['id']<> "") {
 		$nama = $rs['nama'];
 		$idkel_ruas = $rs['idkel_ruas'];
 		$deskripsi = $rs['deskripsi'];
+		$tipe = $rs['tipe']>0?'checked':'';
 	}
 } else {
 	$idruas = '';
 	$nama = '';
 	$idkel_ruas = '';
 	$deskripsi = '';
+	$tipe = 'checked';
 }
 
 if (isset($_GET['del']) AND $_GET['del']<> "") {
@@ -46,21 +53,26 @@ if (isset($_GET['del']) AND $_GET['del']<> "") {
 }
 
 if (isset($_POST['nama']) and $_POST['nama']<>"") {
-	$data['nama'] = $_POST['nama'];
-	$data['deskripsi'] = $_POST['deskripsi'];
+	$data['nama'] = trim($dbs->escape_string(strip_tags($_POST['nama'])));
+	$data['deskripsi'] = trim($dbs->escape_string(strip_tags($_POST['deskripsi'])));
+	$data['tipe'] = isset($_POST['tipe'])?1:0;
+	
 	if (isset($_POST['utama']) and $_POST['utama']<>"") {
 		$data['idkel_ruas'] = 0;
+		$data['tingkat'] = 0;
+		$data['b_atas'] = $max_level[1]+1;
+		$data['b_bawah'] = $max_level[1]+2;
+
 	} else {
 		$data['idkel_ruas'] = $_POST['idkel_ruas'];
-	}
-	$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] ;
-//  $parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] .' OR idruas='.$data['idkel_ruas'] .' ORDER BY b_atas DESC LIMIT 0,1';
-	$parent_rs = $dbs->query($parent_sql);
-	$parent_data = $parent_rs->fetch_array();
+		$parent_sql = 'SELECT * FROM ruas WHERE idruas='.$data['idkel_ruas'] ;
+		$parent_rs = $dbs->query($parent_sql);
+		$parent_data = $parent_rs->fetch_array();
 
-	$data['tingkat'] = $parent_data['tingkat'] +1;
-	$data['b_atas'] = $parent_data['b_bawah'];
-	$data['b_bawah'] =  $parent_data['b_bawah'] +1;
+		$data['tingkat'] = $parent_data['tingkat'] +1;
+		$data['b_atas'] = $parent_data['b_bawah'];
+		$data['b_bawah'] =  $parent_data['b_bawah'] +1;
+	}
 
 	$data['create_date'] = date('Y-m-d');
 	$data['update_date'] = date('Y-m-d');
@@ -78,13 +90,12 @@ if (isset($_POST['nama']) and $_POST['nama']<>"") {
 		}
 	} else {
 		$update = $dbs->query('UPDATE `ruas` SET `b_atas`=`b_atas`+3,`b_bawah`=`b_bawah`+3 WHERE `b_atas` >='.$data['b_atas'].' AND `b_bawah` >='.$data['b_atas']);
-//		$update = $dbs->query('UPDATE `ruas` SET `b_atas`=`b_atas`+2,`b_bawah`=`b_bawah`+3 WHERE `b_atas` >'.$data['b_atas'].' AND `b_bawah` >='.$data['b_atas']);
-//		$update = $dbs->query('UPDATE `ruas` SET `b_bawah`=`b_bawah`+2 WHERE `b_bawah` >='.$data['b_atas']);
+		$update = $dbs->query('UPDATE `ruas` SET `b_bawah`=`b_bawah`+2 WHERE idruas='.$data['idkel_ruas']);
 		$insert = $sql_op->insert('ruas', $data);
 		if ($insert) {
 			utility::jsAlert('Sukses Ditambahkan!');
 		} else {
-			utility::jsAlert('Update penambahan ruas GAGAL!');
+			utility::jsAlert('Update penambahan ruas GAGAL! -> '.$sql_op->error);
 		}
 	}
 }
@@ -112,39 +123,30 @@ if (isset($idruas) AND $idruas<>'') {
 } else {
 	echo '<input type="checkbox" name="utama" class="checkbox"> Ruas utama ';
 }
+echo '<input type="checkbox" name="tipe" '.$tipe. ' class="checkbox"> Isian ';
 echo '<button type="submit" class="btn btn-primary" value="Simpan" >Simpan data</button>';
 echo '</form>';
 
-//Maksimum tingkat
-$max_sql = 'SELECT max(`tingkat`) FROM ruas';
-$max_set =  $dbs->query($max_sql);
-$max_level = $max_set->fetch_row();
 // data ruas
 $top_sql = 'SELECT * FROM ruas ORDER BY b_atas, b_bawah';
 $top_set = $dbs->query($top_sql);
 $result = '<table class="table-striped" width="90%" >';
 while($rs = $top_set->fetch_assoc()) {
-/**		$result .= '<tr>';
-		$result .= '<td width="5%"><a href="kategori.php?id='.$rs['idruas'].'" title="Ubah kategori: '.$rs['nama'].'"><i class="icon-edit"></i></a>';
-		$result .= ' <a href="kategori.php?del='.$rs['idruas'].'" title="Hapus kategori: '.$rs['nama'].'"><i class="icon-remove-sign"></i></a></td>';
-		$result .= '<td>&nbsp;</td><td>'.str_repeat("&nbsp;",$rs['tingkat']).$rs['nama']."&nbsp;--&nbsp;".$rs['deskripsi'].'</td>';
-		$result .= '</tr>';
-**/
-		$result .= "<tr>\n";
-		for ($i=0; $i<= $max_level[0]; $i++) {
-			if ($rs['tingkat'] <> $i) {
-				$result .= "<td>&nbsp;</td>\n";
-			} else {
-				$span = $max_level[0]+1-$i;
-				$result .= '<td width="4%" align="center"><a href="kategori.php?id='.$rs['idruas'].'" title="Ubah kategori: '.$rs['nama'].'"><i class="icon-edit"></i></a>';
-				$result .= '<a href="kategori.php?del='.$rs['idruas'].'" title="Hapus kategori: '.$rs['nama'].'"><i class="icon-remove-sign"></i></a></td>';
-				$result .= '<td colspan="'.$span.'">'.$rs['nama']."&nbsp;--&nbsp;".$rs['deskripsi'].'</td>';
-				break;
-			}
+	$result .= "<tr>\n";
+	for ($i=0; $i<= $max_level[0]; $i++) {
+		if ($rs['tingkat'] <> $i) {
+			$result .= "<td>&nbsp;</td>\n";
+		} else {
+			$span = $max_level[0]+1-$i;
+			$result .= '<td width="4%" align="center"><a href="kategori.php?id='.$rs['idruas'].'" title="Ubah kategori: '.$rs['nama'].'"><i class="icon-edit"></i></a>';
+			$result .= '<a href="kategori.php?del='.$rs['idruas'].'" title="Hapus kategori: '.$rs['nama'].'"><i class="icon-remove-sign"></i></a></td>';
+			$result .= '<td colspan="'.$span.'">'.$rs['nama']."&nbsp;--&nbsp;".$rs['deskripsi'].'</td>';
+			break;
 		}
-		$result .= "</tr>\n";
-
+	}
+	$result .= "</tr>\n";
 }
+
 $result .='</table>';
 echo $result;
 
