@@ -19,7 +19,7 @@
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="./index.php">Browsing <b class="caret"></b></a>
 		<ul class="dropdown-menu">
 			<li><a href="./#">Filter data</a></li>
-			<li><a href="./#">Walktrough Borang data</a></li>
+			<li><a href="./browse.php">Walktrough Borang data</a></li>
 		</ul>
       </li>
       <?php endif; ?>
