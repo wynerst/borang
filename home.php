@@ -4,8 +4,8 @@ define('INDEX_AUTH', '1');
 // file sysconfig sebaiknya berada di paling atas kode
 require 'sysconfig.inc.php';
 // session
-require LIB_DIR.'session.inc.php';
-require LIB_DIR.'session_check.inc.php';
+//require LIB_DIR.'session.inc.php';
+//require LIB_DIR.'session_check.inc.php';
 // check privileges
 
 $page_title = 'Beranda Aplikasi';
