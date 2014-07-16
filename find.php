@@ -23,7 +23,7 @@ ob_start();
 echo '<div class="row"><div class="span8">';
 echo '<h4>'.$page_title.'</h4>';
 echo '<form method="POST" class="form-search">';
-// Lokasi Desa
+/** Lokasi Desa
 echo '<select name="id">';
 echo '<option value="">Pilih Desa</option>';
 $combo_sql = 'SELECT idlokasi, nama FROM lokasi WHERE idlokasi<>6 ';
@@ -37,6 +37,7 @@ while($rs = $combo_set->fetch_assoc()) {
 	}
 }
 echo '</select> ';
+*/
 
 echo '<input type="text" placeholder="Periode Tahun" class="input-small" name="tahun"';
 if (isset($_POST['tahun']) and $_POST['tahun'] <> "") {
