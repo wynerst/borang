@@ -31,7 +31,7 @@ WHILE ($data = $query1->fetch_assoc()) {
 	} else {
 		echo '<h4>'.$data['nama'].'<br />'.$data['deskripsi'].'</h4>';
 	}
-	echo '<p><quote>'.$data['value'].'</quote></p>';
+	echo '<p><blockquote>'.nl2br($data['value']).'</blockquote></p>';
 }
 ?>
 		</div>
