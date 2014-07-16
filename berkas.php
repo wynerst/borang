@@ -52,7 +52,7 @@ if (!empty($_FILES['image']) AND $_FILES['image']['size']) {
 		$insert = $sql_op->insert('files',$_berkas);
 		if ($insert) {
 			$_idx_berkas['idfile'] = $sql_op->insert_id;
-			$_idx_berkas['idlokasi'] = $_POST['desa'];
+//			$_idx_berkas['idlokasi'] = $_POST['desa'];
 			$_idx_berkas['idruas'] = $_POST['filter'];
 			$_idx_berkas['user_id'] = $_SESSION['uid'];
 			$_idx_berkas['tahun'] = $_POST['tahun'];
@@ -80,8 +80,8 @@ if (!empty($_FILES['image']) AND $_FILES['image']['size']) {
 	}
 }
 
-if (isset($_GET['id']) AND $_GET['id']<>'' AND isset($_GET['kat']) AND $_GET['kat']<>'' AND isset($_GET['thn']) AND $_GET['thn']<>'') {
-	$desa=$_GET['id'];
+if (isset($_GET['kat']) AND $_GET['kat']<>'' AND isset($_GET['thn']) AND $_GET['thn']<>'') {
+	$desa=999;
 	$filter=$_GET['kat'];
 	$tahun=$_GET['thn'];
 }
@@ -109,8 +109,8 @@ if (isset($_GET['del']) and $_GET['del'] <>"") {
 	}
 }
 
-if (!isset($desa) OR !isset($tahun) OR !isset($filter)) {
-  $main_content = '<div class="alert alert-error">Data lokasi, waktu, dan kategori tidak lengkap!</div>';
+if (!isset($tahun) OR !isset($filter)) {
+  $main_content = '<div class="alert alert-error">Data periode dan Standar tidak lengkap!</div>';
 	require './template/sosek/page_tpl.inc.php';
 	exit();
 }
@@ -140,28 +140,30 @@ if (isset($tahun)) {
 	echo date("Y").'"> ';
 }
 
-if (isset($_POST['id']) AND isset($_POST['tahun']) AND isset($_POST['filter'])) {
+if (isset($_POST['id']) AND isset($_POST['tahun'])) {
+//if (isset($_POST['id']) AND isset($_POST['tahun']) AND isset($_POST['filter'])) {
 	echo '<input type="hidden" name="desa" value="'.$desa.'">';
 	echo '<input type="hidden" name="tahun" value="'.$tahun.'">';
-	echo '<input type="hidden" name="filter" value="'.$filter.'">';
+	//echo '<input type="hidden" name="filter" value="'.$filter.'">';
 } else {
-	if (isset($desa) AND isset($tahun) AND isset($filter)) {
+	if (isset($desa) AND isset($tahun)) {
+	//if (isset($desa) AND isset($tahun) AND isset($filter)) {
 		echo '<input type="hidden" name="desa" value="'.$desa.'">';
 		echo '<input type="hidden" name="tahun" value="'.$tahun.'">';
-		echo '<input type="hidden" name="filter" value="'.$filter.'">';
+		//echo '<input type="hidden" name="filter" value="'.$filter.'">';
 	}
 }
+
 //echo '<button type="submit" class="btn btn-success" >Tampilkan Form</button>';
 echo '</form></div>';
 echo '</div>';
 
 // daftar berkas untuk kategori terkait
-$_sql = 'SELECT mb.idlampiran, b.file_name, b.file_desc, b.file_title AS judul, b.mime_type AS jenis, l.nama AS lokasi, k.nama as kategori, mb.tahun, mb.user_id
+$_sql = 'SELECT mb.idlampiran, b.file_name, b.file_desc, b.file_title AS judul, b.mime_type AS jenis, k.nama as kategori, mb.tahun, mb.user_id
     FROM files AS b
 	LEFT JOIN main_berkas AS mb ON mb.idfile = b.file_id
-	LEFT JOIN ruas AS k ON mb.idruas = k.idruas
-	LEFT JOIN lokasi AS l ON mb.idlokasi = l.idlokasi ';
-$_where = 'WHERE l.idlokasi='.$desa.' AND k.idruas='.$filter.' AND mb.tahun='.$tahun.' ';
+	LEFT JOIN ruas AS k ON mb.idruas = k.idruas ';
+$_where = 'WHERE k.idruas='.$filter.' AND mb.tahun='.$tahun.' ';
 $_berkas = $dbs->query($_sql.$_where);
 echo '<form method="POST" enctype="multipart/form-data" class="form-search">';
 echo '<select name="filter" '.$disabled.' >';
@@ -189,11 +191,14 @@ echo '<input type="text" name="title" id="title" placeholder="Judul berkas" valu
 echo '<input type="text" name="description" id="description" placeholder="Deskripsi/caption berkas" class="input-large" value="" /> &nbsp;&nbsp;';
 echo '<input type="file" name="image" id="image" value="" /> &nbsp;&nbsp;';
 echo '<input type="submit" name="simpanBerkas" class="btn btn-success" value="Unggah berkas baru">&nbsp;&nbsp;Maximum '.$sysconf['max_image_upload'].' KB';
-	if (isset($desa) AND isset($tahun) AND isset($filter)) {
+
+	if (isset($desa) AND isset($tahun)) {
+//	if (isset($desa) AND isset($tahun) AND isset($filter)) {
 		echo '<input type="hidden" name="desa" value="'.$desa.'">';
 		echo '<input type="hidden" name="tahun" value="'.$tahun.'">';
-		echo '<input type="hidden" name="filter" value="'.$filter.'">';
+//		echo '<input type="hidden" name="filter" value="'.$filter.'">';
 	}
+
 echo '</form>';
 echo '<table width="100%"><tr><td width="50%"><ul>';
 while($rs = $_berkas->fetch_assoc()) {

@@ -67,7 +67,7 @@ if (isset($_POST['simpan'])) {
 	require SIMBIO_BASE_DIR.'simbio_DB/simbio_dbop.inc.php';
 	$simpan = $_POST['simpan'];
 	// walk through the id of field
-	$_sql = 'SELECT idruas, nama FROM ruas WHERE idkel_ruas =' . $simpan;
+	$_sql = 'SELECT idruas, nama FROM ruas';
 	$_sqlset = $dbs->query($_sql);
 	$_db_ops = new simbio_dbop($dbs);
 	while($rs = $_sqlset->fetch_assoc()) {
@@ -75,7 +75,7 @@ if (isset($_POST['simpan'])) {
 			$value = $_POST[$rs['idruas']];
 			$data['value'] = $value;
 			$data['idruas'] = $rs['idruas'];
-			$data['tahun'] = $_POST['tahun'];
+//			$data['tahun'] = $_POST['tahun'];
 //			$data['idlokasi'] = $_POST['lokasi'];
 			$data['user_id'] = $_SESSION['uid'];
 			$data['create_date'] = date('Y-m-d');

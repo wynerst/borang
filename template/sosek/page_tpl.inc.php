@@ -14,7 +14,7 @@
   <div class="navbar-inner">
     <a class="brand" href="./csr.php"> &nbsp; Borang Akreditasi</a>
     <ul class="nav">
-      <li><a href="./csr.php">Home</a></li>
+      <li><a href="./home.php">Home</a></li>
       <?php if (utility::havePrivilege('filter', 'r')) : ?>
       <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="./index.php">Browsing <b class="caret"></b></a>
 		<ul class="dropdown-menu">
