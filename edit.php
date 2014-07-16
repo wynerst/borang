@@ -78,10 +78,12 @@ echo '<div class="control-group">';
 echo '<label class="control-label">Kategori</label>';
 echo '<div class="controls"><input type="text" class="input-medium" disabled value="'.$rs['kelas'].'"></div>';
 echo '</div>';
+/**
 echo '<div class="control-group">';
 echo '<label class="control-label">Desa</label>';
 echo '<div class="controls"><input type="text" class="input-medium" disabled value="'.$rs['desa'].'"></div>';
 echo '</div>';
+*/
 echo '<div class="control-group">';
 echo '<label class="control-label">Tahun</label>';
 echo '<div class="controls"><input type="text" class="input-small" disabled value="'.$rs['tahun'].'"></div>';

@@ -39,13 +39,23 @@ if (isset($_POST['filter'])) {
 			$output .= '<legend>'.$rs['nama'].'</legend>';
 			$output .= '<span class="help-block">'.$rs['deskripsi'].'</span>';
 		} else {
-			$output .= '<div class="control-group">';
-			$output .= '<label class="control-label">'.$rs['nama'].'</label>';
-			$output .= '<div class="controls"><textarea rows="1" class="input-block-level" name="'.$rs['idruas'].'"></textarea>';
-			if ($rs['deskripsi'] <> "") {
-				$output .= '<span class="help-block">'.$rs['deskripsi'].'</span>';
+			if ($rs['tipe'] > 0) {
+				$output .= '<div class="control-group">';
+				$output .= '<label class="control-label">'.$rs['nama'].'</label>';
+				$output .= '<div class="controls"><textarea rows="1" class="input-block-level" name="'.$rs['idruas'].'"></textarea>';
+				if ($rs['deskripsi'] <> "") {
+					$output .= '<span class="help-block">'.$rs['deskripsi'].'</span>';
+				}
+				$output .= '</div></div>';
+			} else {
+				$output .= '<div class="control-group">';
+				$output .= '<label class="control-label">'.$rs['nama'].'</label>';
+				$output .= '<div class="controls">';
+				if ($rs['deskripsi'] <> "") {
+					$output .= '<span class="help-block">'.$rs['deskripsi'].'</span>';
+				}
+				$output .= '</div></div>';
 			}
-			$output .= '</div></div>';
 		}
 	}
 	$output .= '<input type="hidden" name="tahun" value="'.$tahun.'">';
@@ -93,22 +103,7 @@ if (isset($_POST['simpan'])) {
 }
 
 echo '<div class="row"><div class="span8"><form method="POST" class="form-search">';
-/**
-// Lokasi Desa
-echo '<select name="id">';
-echo '<option value="">Pilih Desa</option>';
-$combo_sql = 'SELECT idlokasi, nama FROM lokasi WHERE idlokasi<>6 ';
-$combo_sql .= 'ORDER BY nama ';
-$combo_set = $dbs->query($combo_sql);
-while($rs = $combo_set->fetch_assoc()) {
-	if (isset($desa) AND $desa == $rs['idlokasi']) {
-		echo '<option value="'.$rs['idlokasi'].'" selected >'.$rs['nama'].'</option>';
-	} else {
-		echo '<option value="'.$rs['idlokasi'].'">'.$rs['nama'].'</option>';
-	}
-}
-echo '</select> ';
-*/
+
 echo 'Periode Tahun <input type="text" placeholder="Periode Tahun" class="input-small" name="tahun" value="';
 if (isset($_POST['tahun'])) {
 	echo $_POST['tahun'].'"> ';

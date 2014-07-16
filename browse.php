@@ -8,7 +8,7 @@ require LIB_DIR.'session.inc.php';
 require LIB_DIR.'session_check.inc.php';
 // check privileges
 
-$page_title = 'Beranda Aplikasi';
+$page_title = 'Borang Program Studi';
 
 ob_start();
 echo '<div class="row"><div class="span12">';
@@ -37,6 +37,7 @@ WHILE ($data = $query1->fetch_assoc()) {
 		</div>
 	</div>
 <?php
+
 $main_content = ob_get_clean();
 
 require './template/sosek/page_tpl.inc.php';
