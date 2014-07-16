@@ -70,9 +70,9 @@ if (isset($_POST['simpan'])) {
 			if ($combine<>'') {
 				$main_limit .= 'AND ('.$combine.') ';
 			}
-			if (isset($_POST['desa']) ) {
-				$main_limit .= 'AND (c.idlokasi ='.$_POST['desa'].') ';
-			}
+//			if (isset($_POST['desa']) ) {
+//				$main_limit .= 'AND (c.idlokasi ='.$_POST['desa'].') ';
+//			}
 			if (isset($_POST['tahun']) ) {
 				$main_limit .= 'AND (c.tahun = '.$_POST['tahun'].') ';
 			}
@@ -135,7 +135,7 @@ if (isset($_POST['simpan'])) {
 				echo '<tr><th>Data</th><th>Tahun</th><th>Deskripsi</th><th>&nbsp;</th></tr>';
 				$result = $dbs->query($paging_sql);
 					while($rs = $result->fetch_assoc()) {
-							echo '<tr><td>Desa <strong>'.$rs['desa'].': '.$rs['kategori'].'</strong> -> '.$rs['nama'].'</td>';
+							echo '<tr><td>Standar: <strong>'.$rs['kategori'].'</strong> -> '.$rs['nama'].'</td>';
 							echo '<td>'.$rs['tahun'].'</td>';
 							echo '<td>'.nl2br($rs['value']).'</td>';
 		//					echo '<td><a href="edit.php?id='.$rs['idmain_cerita'].'"><i class="icon-edit"></i></a></td>';
